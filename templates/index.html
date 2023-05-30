@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <title>FastWrite</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand mx-3" href="/"><b>FastWrite</b></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
+    <h2 class="my-3">
+        <center>{{default}}</center>
+    </h2>
+    <h2 class="my-3">
+        <center id="output"></center>
+    </h2>
+    <form action="/" method="post" id="myForm">
+        <div class="container-md my-3">
+            <div class="form-group my-3">
+                <input oninput="A(this)" type="text" class="form-control my-1" name="text" id="text"
+                    placeholder="Let's Start..." value="{{text}}">
+            </div>
+            <button type="submit" class="btn btn-primary my-1" id="submitButton">Submit</button>
+        </div>
+    </form>
+    <h1>
+        <center id="hell">{{status}}</center>
+    </h1>
+
+</body>
+<script>
+    function A(text) {
+        document.getElementById('output').innerText = text.value
+    }
+    var typingTimer;
+    var startTime;
+    var doneTypingInterval = 1000; // Time in milliseconds (2 seconds)
+    document.getElementById('text').addEventListener('keydown', function (event) {
+        if (event.keyCode === 13) { // Check if the pressed key is Enter
+            clearTimeout(typingTimer); // Clear the typing timer
+
+            if (startTime) {
+                var endTime = Date.now();
+                var totalTime = endTime - startTime;
+                console.log("Total time: " + totalTime + "ms");
+                myFunction(totalTime);
+            }
+        } else {
+            if (!startTime) {
+                startTime = Date.now();
+            }
+            clearTimeout(typingTimer); // Clear the previous timer
+            typingTimer = setTimeout(doneTyping, doneTypingInterval);
+        }
+    });
+    function doneTyping() {
+        console.log("User stopped typing");
+        startTime = null; // Reset the start time
+    }
+    function handleSubmit(event) {
+        event.preventDefault(); // Prevent the default form submission
+        document.getElementById('myForm').submit();
+    }
+    document.getElementById('submitButton').addEventListener('click', handleSubmit);
+    function myFunction(totalTime) {
+        console.log("JavaScript function called with total time: " + totalTime);
+    }
+
+</script>
+
+</html>
