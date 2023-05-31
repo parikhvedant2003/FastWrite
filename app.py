@@ -15,7 +15,8 @@ def hello():
     if request.method == 'POST':
         default = "Hello There!"
         text = request.form.get('text')
-        takenTime = request.form.get('totaltime')
+        print("H")
+        takenTime = request.form.get('timeTaken')
         print(takenTime)
         if default == text:
             calculate_WPM(text, takenTime)
