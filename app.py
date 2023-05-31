@@ -10,14 +10,17 @@ def index():
     default = "Hello There!"
     return render_template('index.html', default=default)
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/submit', methods=['POST'])
 def hello():
     if request.method == 'POST':
         default = "Hello There!"
-        text = request.form.get('text')
+        # text = request.form.get('text')
+        text = request.get_data(as_text=True)[0]
         print("H")
-        takenTime = request.form.get('timeTaken')
-        print(takenTime)
+        print(text)
+        takenTime = 0
+        # takenTime = request.form.get('timeTaken')
+        # print(takenTime)
         if default == text:
             calculate_WPM(text, takenTime)
             return render_template('index.html', status = "Win", text=text, default=default)

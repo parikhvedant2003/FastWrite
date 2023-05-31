@@ -7,12 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-    <title>FastWrite</title>
+    <title>WriteFast</title>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand mx-3" href="/"><b>FastWrite</b></a>
+        <a class="navbar-brand mx-3" href="/"><b>WriteFast</b></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -24,7 +24,7 @@
     <h2 class="my-3">
         <center id="output"></center>
     </h2>
-    <form action="{{ url_for('hello') }}" method="post" id="myForm">
+    <form action="{{ url_for('hello') }}" method="POST" id="myForm">
         <div class="container-md my-3">
             <div class="form-group my-3">
                 <input oninput="A(this)" type="text" class="form-control my-1" name="text" id="text"
@@ -43,16 +43,13 @@
     function A(text) {
         document.getElementById('output').innerText = text.value
     }
+
     const typing_ground = document.querySelector('#text');
     const btn = document.querySelector('#btn');
     const score = document.querySelector('#hell');
     const show_sentence = document.querySelector('#input');
-
     let startTime, endTime, totalTimeTaken;
-
-    const sentences = ['The quick brown fox jumps over the lazy dog 1',
-        'The quick brown fox jumps over the lazy dog 2',
-        'The quick brown fox jumps over the lazy dog 3 ']
+    const sentences = ['Parikh Vedant Jasminkumar']
 
     const calculateTypingSpeed = (time_taken) => {
         let totalWords = typing_ground.value.trim();
@@ -66,6 +63,13 @@
             score.innerHTML = `Your typing speed is 0 words per minutes & time taken ${time_taken} sec`;
         }
     }
+    const startTyping = () => {
+        let randomNumber = Math.floor(Math.random() * sentences.length);
+        show_sentence.innerHTML = sentences[randomNumber];
+        let date = new Date();
+        startTime = date.getTime();
+        btn.innerText = "Done";
+    }
     const endTypingTest = () => {
         btn.innerText = "Start";
 
@@ -74,15 +78,8 @@
 
         totalTimeTaken = (endTime - startTime) / 1000;
         calculateTypingSpeed(totalTimeTaken);
-        // show_sentence.innerHTML = "";
+        show_sentence.innerHTML = "";
         typing_ground.value = "";
-    }
-    const startTyping = () => {
-        let randomNumber = Math.floor(Math.random() * sentences.length);
-        show_sentence.innerHTML = sentences[randomNumber];
-        let date = new Date();
-        startTime = date.getTime();
-        btn.innerText = "Done";
     }
     btn.addEventListener('click', () => {
         switch (btn.innerText.toLowerCase()) {
@@ -104,12 +101,16 @@
     function handleFormSubmit() {
         var formData = new FormData(document.getElementById("myForm"));
         // console.log("Form data: " + formData);
-        // formData.append("timeTaken", timeTaken)
+        var text = "Vedant";
+        var text1 = "Parikh";
+        var arr = [text, text1];
+        // formData.append("text", "Vedant")
         // console.log("Form data: " + formData['timeTaken']);
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/", true);
+        xhr.open("POST", "/submit", true);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.send(formData);
+        xhr.send(arr);
+        // xhr.send(text1);
     }
 </script>
 
