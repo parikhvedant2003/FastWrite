@@ -1,116 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+      crossorigin="anonymous"
+    />
     <title>FastWrite</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand mx-3" href="/"><b>FastWrite</b></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+      <a class="navbar-brand mx-3" href="/"><b>FastWrite</b></a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
     </nav>
     <h2 class="my-3">
-        <center id="input">{{default}}</center>
+      <center id="input"></center>
     </h2>
     <h2 class="my-3">
-        <center id="output"></center>
+      <center id="output"></center>
     </h2>
     <form action="{{ url_for('hello') }}" method="post" id="myForm">
-        <div class="container-md my-3">
-            <div class="form-group my-3">
-                <input oninput="A(this)" type="text" class="form-control my-1" name="text" id="text"
-                    placeholder="Let's Start..." value="{{text}}" disabled>
-            </div>
-            <button id="btn" class="btn btn-primary my-1">Start</button>
-            <button type="submit" class="btn btn-primary my-1" id="submitButton">Submit</button>
+      <div class="container-md my-3">
+        <div class="form-group my-3">
+          <input
+            oninput="A(this)"
+            type="text"
+            class="form-control my-1"
+            name="text"
+            id="text"
+            placeholder="Let's Start..."
+            value="{{text}}"
+            disabled
+          />
         </div>
+        <button id="btn" class="btn btn-primary my-1">Start</button>
+        <button type="submit" class="btn btn-primary my-1" id="submitButton">
+          Submit
+        </button>
+      </div>
     </form>
     <h1>
-        <center id="hell">{{status}}</center>
+      <center id="hell"></center>
     </h1>
-
-</body>
-<script>
+  </body>
+  <script>
     function A(text) {
-        document.getElementById('output').innerText = text.value
+      typed_sentence = document.getElementById("text").value;
+      let slice_sentence = selected_sentence.slice(0, typed_sentence.length);
+      document.getElementById("output").innerText = text.value;
+      checker(slice_sentence, typed_sentence);
     }
-    const typing_ground = document.querySelector('#text');
-    const btn = document.querySelector('#btn');
-    const score = document.querySelector('#hell');
-    const show_sentence = document.querySelector('#input');
+    const show_sentence = document.querySelector("#input");
+    const typing_ground = document.querySelector("#text");
+    const btn = document.querySelector("#btn");
+    const score = document.querySelector("#hell");
 
     let startTime, endTime, totalTimeTaken;
+    var selected_sentence = "";
+    var typed_sentence = "";
 
-    const sentences = ['The quick brown fox jumps over the lazy dog 1',
-        'The quick brown fox jumps over the lazy dog 2',
-        'The quick brown fox jumps over the lazy dog 3 ']
+    const sentences = ["The quick brown fox jumps over the lazy dog"];
 
     const calculateTypingSpeed = (time_taken) => {
-        let totalWords = typing_ground.value.trim();
-        let actualWords = totalWords === '' ? 0 : totalWords.split(" ").length;
-
-        if (actualWords !== 0) {
-            let typing_speed = (actualWords / time_taken) * 60;
-            typing_speed = Math.round(typing_speed);
-            score.innerHTML = `Your typing speed is ${typing_speed} words per minutes & you wrote ${actualWords} words & time taken ${time_taken} sec`;
-        } else {
-            score.innerHTML = `Your typing speed is 0 words per minutes & time taken ${time_taken} sec`;
-        }
-    }
+      let totalWords = typing_ground.value.trim();
+      let actualWords = totalWords === "" ? 0 : totalWords.split(" ").length;
+      if (actualWords !== 0) {
+        let typing_speed = (actualWords / time_taken) * 60;
+        typing_speed = Math.round(typing_speed);
+        score.innerHTML = `Your typing speed is ${typing_speed} words per minutes & you wrote ${actualWords} words & time taken ${time_taken} sec`;
+      } else {
+        score.innerHTML = `Your typing speed is 0 words per minutes & time taken ${time_taken} sec`;
+      }
+    };
     const endTypingTest = () => {
-        btn.innerText = "Start";
-
-        let date = new Date();
-        endTime = date.getTime();
-
-        totalTimeTaken = (endTime - startTime) / 1000;
-        calculateTypingSpeed(totalTimeTaken);
-        // show_sentence.innerHTML = "";
-        typing_ground.value = "";
-    }
+      btn.innerText = "Start";
+      let date = new Date();
+      endTime = date.getTime();
+      totalTimeTaken = (endTime - startTime) / 1000;
+      calculateTypingSpeed(totalTimeTaken);
+      typing_ground.value = "";
+    };
+    const checker = (slice_sentence, typed_sentence) => {
+      if (slice_sentence == typed_sentence) {
+        // document.body.style.backgroundColor = "green";
+        typing_ground.style.backgroundColor = "lightgreen";
+      } else {
+        // document.body.style.backgroundColor = "red";
+        typing_ground.style.backgroundColor = "red";
+      }
+    };
     const startTyping = () => {
-        let randomNumber = Math.floor(Math.random() * sentences.length);
-        show_sentence.innerHTML = sentences[randomNumber];
-        let date = new Date();
-        startTime = date.getTime();
-        btn.innerText = "Done";
-    }
-    btn.addEventListener('click', () => {
-        switch (btn.innerText.toLowerCase()) {
-            case "start":
-                typing_ground.removeAttribute('disabled');
-                startTyping();
-                break;
-            case "done":
-                typing_ground.setAttribute('disabled', 'true');
-                endTypingTest();
-                break;
-        }
-    })
-
-    document.getElementById("myForm").addEventListener("submit", function (event) {
-        event.preventDefault();
-        handleFormSubmit();
+      let randomNumber = Math.floor(Math.random() * sentences.length);
+      selected_sentence = sentences[randomNumber];
+      show_sentence.innerHTML = sentences[randomNumber];
+      let date = new Date();
+      startTime = date.getTime();
+      btn.innerText = "Done";
+    };
+    btn.addEventListener("click", () => {
+      switch (btn.innerText.toLowerCase()) {
+        case "start":
+          typing_ground.removeAttribute("disabled");
+          startTyping();
+          break;
+        case "done":
+          typing_ground.setAttribute("disabled", "true");
+          endTypingTest();
+          //   checker();
+          setTimeout(function () {
+            window.location.reload();
+          }, 10000);
+          break;
+      }
     });
-    function handleFormSubmit() {
-        var formData = new FormData(document.getElementById("myForm"));
-        // console.log("Form data: " + formData);
-        // formData.append("timeTaken", timeTaken)
-        // console.log("Form data: " + formData['timeTaken']);
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.send(formData);
-    }
-</script>
 
+    document
+      .getElementById("myForm")
+      .addEventListener("submit", function (event) {
+        event.preventDefault();
+        // handleFormSubmit();
+      });
+    // function handleFormSubmit() {
+    //     var formData = new FormData(document.getElementById("myForm"));
+    //     // console.log("Form data: " + formData);
+    //     // formData.append("timeTaken", timeTaken)
+    //     // console.log("Form data: " + formData['timeTaken']);
+    //     var xhr = new XMLHttpRequest();
+    //     xhr.open("POST", "/", true);
+    //     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    //     xhr.send(formData);
+    // }
+  </script>
 </html>
