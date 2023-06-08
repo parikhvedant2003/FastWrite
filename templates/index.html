@@ -10,23 +10,17 @@
       integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
       crossorigin="anonymous"
     />
+    <style>
+      body {
+        background-color: rgb(177, 177, 177);
+      }
+    </style>
     <title>FastWrite</title>
   </head>
 
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand mx-3" href="/"><b>FastWrite</b></a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
     </nav>
     <h2 class="my-3">
       <center id="input"></center>
@@ -38,7 +32,7 @@
       <div class="container-md my-3">
         <div class="form-group my-3">
           <input
-            oninput="A(this)"
+            oninput="write_parallel(this)"
             type="text"
             class="form-control my-1"
             name="text"
@@ -49,17 +43,14 @@
           />
         </div>
         <button id="btn" class="btn btn-primary my-1">Start</button>
-        <button type="submit" class="btn btn-primary my-1" id="submitButton">
-          Submit
-        </button>
       </div>
     </form>
-    <h1>
-      <center id="hell"></center>
-    </h1>
+    <div id="hell">
+
+    </div>
   </body>
   <script>
-    function A(text) {
+    function write_parallel(text) {
       typed_sentence = document.getElementById("text").value;
       let slice_sentence = selected_sentence.slice(0, typed_sentence.length);
       document.getElementById("output").innerText = text.value;
@@ -74,7 +65,11 @@
     var selected_sentence = "";
     var typed_sentence = "";
 
-    const sentences = ["The quick brown fox jumps over the lazy dog"];
+    const sentences = ["A", "V", "K"];
+
+    let randomNumber = Math.floor(Math.random() * sentences.length);
+    selected_sentence = sentences[randomNumber];
+    show_sentence.innerHTML = sentences[randomNumber];
 
     const calculateTypingSpeed = (time_taken) => {
       let totalWords = typing_ground.value.trim();
@@ -82,35 +77,65 @@
       if (actualWords !== 0) {
         let typing_speed = (actualWords / time_taken) * 60;
         typing_speed = Math.round(typing_speed);
-        score.innerHTML = `Your typing speed is ${typing_speed} words per minutes & you wrote ${actualWords} words & time taken ${time_taken} sec`;
+        // score.innerHTML = `Your typing speed is ${typing_speed} WPM & you wrote ${actualWords} words & time taken ${time_taken} sec`;
+        score.innerHTML = `<table class="table table-bordered table-light">
+  <thead>
+    <tr>
+      <th scope="col">WPM</th>
+      <th scope="col">No. of Words</th>
+      <th scope="col">Taken Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>${typing_speed}</td>
+      <td>${actualWords}</td>
+      <td>${time_taken}</td>
+    </tr>
+  </tbody>
+</table>`;
       } else {
-        score.innerHTML = `Your typing speed is 0 words per minutes & time taken ${time_taken} sec`;
+        score.innerHTML = `<table class="table table-bordered table-light">
+  <thead>
+    <tr>
+      <th scope="col">WPM</th>
+      <th scope="col">No. of Words</th>
+      <th scope="col">Taken Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0</td>
+      <td>${time_taken}</td>
+    </tr>
+  </tbody>
+</table>`;
       }
     };
+    const startTyping = () => {
+      document.getElementById("text").focus();
+      let date = new Date();
+      startTime = date.getTime();
+      btn.innerText = "Done";
+    };
     const endTypingTest = () => {
-      btn.innerText = "Start";
+      btn.setAttribute('disabled', 'true');
       let date = new Date();
       endTime = date.getTime();
       totalTimeTaken = (endTime - startTime) / 1000;
       calculateTypingSpeed(totalTimeTaken);
       typing_ground.value = "";
+      setTimeout(function () {
+        window.location.reload();
+      }, 10000);
     };
     const checker = (slice_sentence, typed_sentence) => {
       if (slice_sentence == typed_sentence) {
-        // document.body.style.backgroundColor = "green";
         typing_ground.style.backgroundColor = "lightgreen";
       } else {
-        // document.body.style.backgroundColor = "red";
         typing_ground.style.backgroundColor = "red";
       }
-    };
-    const startTyping = () => {
-      let randomNumber = Math.floor(Math.random() * sentences.length);
-      selected_sentence = sentences[randomNumber];
-      show_sentence.innerHTML = sentences[randomNumber];
-      let date = new Date();
-      startTime = date.getTime();
-      btn.innerText = "Done";
     };
     btn.addEventListener("click", () => {
       switch (btn.innerText.toLowerCase()) {
@@ -121,10 +146,6 @@
         case "done":
           typing_ground.setAttribute("disabled", "true");
           endTypingTest();
-          //   checker();
-          setTimeout(function () {
-            window.location.reload();
-          }, 10000);
           break;
       }
     });
@@ -133,17 +154,6 @@
       .getElementById("myForm")
       .addEventListener("submit", function (event) {
         event.preventDefault();
-        // handleFormSubmit();
       });
-    // function handleFormSubmit() {
-    //     var formData = new FormData(document.getElementById("myForm"));
-    //     // console.log("Form data: " + formData);
-    //     // formData.append("timeTaken", timeTaken)
-    //     // console.log("Form data: " + formData['timeTaken']);
-    //     var xhr = new XMLHttpRequest();
-    //     xhr.open("POST", "/", true);
-    //     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    //     xhr.send(formData);
-    // }
   </script>
 </html>
