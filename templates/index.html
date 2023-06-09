@@ -28,7 +28,7 @@
     <h2 class="my-3">
       <center id="output"></center>
     </h2>
-    <form action="{{ url_for('hello') }}" method="post" id="myForm">
+    <form action="" method="post" id="myForm">
       <div class="container-md my-3">
         <div class="form-group my-3">
           <input
@@ -38,38 +38,36 @@
             name="text"
             id="text"
             placeholder="Let's Start..."
-            value="{{text}}"
             disabled
           />
         </div>
         <button id="btn" class="btn btn-primary my-1">Start</button>
       </div>
     </form>
-    <div id="hell">
-
-    </div>
+    <div id="hell"></div>
   </body>
   <script>
-    function write_parallel(text) {
-      typed_sentence = document.getElementById("text").value;
-      let slice_sentence = selected_sentence.slice(0, typed_sentence.length);
-      document.getElementById("output").innerText = text.value;
-      checker(slice_sentence, typed_sentence);
-    }
     const show_sentence = document.querySelector("#input");
     const typing_ground = document.querySelector("#text");
     const btn = document.querySelector("#btn");
     const score = document.querySelector("#hell");
-
+    
     let startTime, endTime, totalTimeTaken;
     var selected_sentence = "";
     var typed_sentence = "";
-
-    const sentences = ["A", "V", "K"];
-
+    
+    const sentences = ["Vedant Parikh", "Parikh Vedant"];
+    
     let randomNumber = Math.floor(Math.random() * sentences.length);
     selected_sentence = sentences[randomNumber];
     show_sentence.innerHTML = sentences[randomNumber];
+    
+    function write_parallel(text) {
+      typed_sentence = text.value;
+      let slice_sentence = selected_sentence.slice(0, typed_sentence.length);
+      checker(slice_sentence, typed_sentence);
+      document.getElementById("output").innerText = typed_sentence;
+    }
 
     const calculateTypingSpeed = (time_taken) => {
       let totalWords = typing_ground.value.trim();
@@ -77,7 +75,6 @@
       if (actualWords !== 0) {
         let typing_speed = (actualWords / time_taken) * 60;
         typing_speed = Math.round(typing_speed);
-        // score.innerHTML = `Your typing speed is ${typing_speed} WPM & you wrote ${actualWords} words & time taken ${time_taken} sec`;
         score.innerHTML = `<table class="table table-bordered table-light">
   <thead>
     <tr>
@@ -113,14 +110,16 @@
 </table>`;
       }
     };
+    
     const startTyping = () => {
       document.getElementById("text").focus();
       let date = new Date();
       startTime = date.getTime();
       btn.innerText = "Done";
     };
+    
     const endTypingTest = () => {
-      btn.setAttribute('disabled', 'true');
+      btn.setAttribute("disabled", "true");
       let date = new Date();
       endTime = date.getTime();
       totalTimeTaken = (endTime - startTime) / 1000;
@@ -130,6 +129,7 @@
         window.location.reload();
       }, 10000);
     };
+    
     const checker = (slice_sentence, typed_sentence) => {
       if (slice_sentence == typed_sentence) {
         typing_ground.style.backgroundColor = "lightgreen";
@@ -137,6 +137,7 @@
         typing_ground.style.backgroundColor = "red";
       }
     };
+    
     btn.addEventListener("click", () => {
       switch (btn.innerText.toLowerCase()) {
         case "start":
