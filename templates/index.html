@@ -61,8 +61,12 @@
         event.preventDefault();
       });
       typing_ground.addEventListener('keydown', function (event) {
+        var key = event.key;
         if (event.key === "Backspace") {
           output.innerHTML = output.innerHTML.slice(0, (36 * (typing_ground.value.length - 2)));
+        }
+        if ((event.ctrlKey && key === "Backspace") || (event.ctrlKey && key === "Delete") || (key === "Delete") || (key.startsWith("Arrow"))) {
+          event.preventDefault();
         }
       });
     });
