@@ -24,8 +24,9 @@
     <center id="input"></center>
   </h2>
   <h2 class="my-3">
-    <div id="output"></div>
-    <div id="output1"></div>
+    <center>
+      <div id="output"></div>
+    </center>
   </h2>
   <form action="" method="post" id="myForm">
     <div class="container-md my-3">
@@ -38,20 +39,17 @@
   </form>
   <div id="hell"></div>
   <script>
-    var typing_ground, show_sentence, output1, output, btn, score, randomNumber; // = document.querySelector("#input"); // random text
+    var typing_ground, show_sentence, output, btn, score, randomNumber; // = document.querySelector("#input"); // random text
 
     var startTime, endTime, totalTimeTaken, selected_sentence, typed_sentence;
     const sentences = ["Vedant Parikh"];
-    output1 = document.querySelector("#output1");
 
 
 
     btn = document.querySelector("#btn");
     $(document).ready(function () {
       show_sentence = document.querySelector("#input"); // random text
-      // console.log(show_sentence);// parallel writing
-      output = document.querySelector("#output");
-      // console.log(output); // parallel writing
+      output = document.querySelector("#output"); // parallel writing output
       typing_ground = document.querySelector("#text"); // input box
       score = document.querySelector("#hell"); // result box
 
@@ -64,24 +62,18 @@
       });
       typing_ground.addEventListener('keydown', function (event) {
         if (event.key === "Backspace") {
-          
-          let z = output.innerHTML
-          // console.log(typing_ground.value.slice(0, typing_ground.value.length - 1));
-          let y = z.slice(0, (36 * typing_ground.value.length - 36));
-          console.log(y + "----");
-          output.innerHTML = y;
+          output.innerHTML = output.innerHTML.slice(0, (36 * (typing_ground.value.length - 2)));
         }
       });
     });
 
     function write_parallel(text) {
       typed_sentence = text.value;
-      // let slice_sentence = selected_sentence.slice(0, typed_sentence.length);
+      slice_sentence = selected_sentence.slice(0, (typed_sentence.length));
       let slice = selected_sentence[typed_sentence.length - 1];
       let typed = typed_sentence[typed_sentence.length - 1];
-      // checker(slice_sentence, typed_sentence);
-      checker(slice, typed, (typed_sentence.length - 1));
-      // document.getElementById("output").innerText = typed_sentence;
+      compare(slice, typed);
+      checker(slice_sentence, typed_sentence);
     }
 
     const calculateTypingSpeed = (time_taken) => {
@@ -145,31 +137,23 @@
       }, 1000000);
     };
 
-    const checker = (slice_sentence, typed_sentence, i) => {
+    const checker = (slice_sentence, typed_sentence) => {
       if (slice_sentence == typed_sentence) {
         typing_ground.style.backgroundColor = "lightgreen";
-        compare(slice_sentence, typed_sentence);
       } else {
         typing_ground.style.backgroundColor = "red";
-        // compare(slice_sentence, typed_sentence);
       }
     };
 
     const compare = (selected_sentence, typed_sentence) => {
       let x = "";
-      for (let i = 0; i < typed_sentence.length; i++) {
-        if (selected_sentence[i] != typed_sentence[i]) {
-          typed_sentence[i] = '<span style="color: red;">' + typed_sentence[i] + '</span>';
-          x += '<span style="color: red;">' + typed_sentence[i] + '</span>';
-        }
-        else {
-          typed_sentence[i] = '<span style="color: green;">' + typed_sentence[i] + '</span>';
-          x += '<span style="color: green;">' + typed_sentence[i] + '</span>';
-        }
+      if (selected_sentence != typed_sentence) {
+        x += '<span style="color: red;">' + typed_sentence + '</span>';
       }
-      console.log(x);
+      else {
+        x += '<span style="color: green;">' + typed_sentence + '</span>';
+      }
       output.innerHTML += x;
-      // console.log(output);
     };
 
     btn.addEventListener("click", () => {
@@ -181,7 +165,6 @@
         case "done":
           typing_ground.setAttribute("disabled", "true");
           endTypingTest();
-          // compare(selected_sentence, typed_sentence);
           break;
       }
     });
