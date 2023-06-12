@@ -18,7 +18,7 @@
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand mx-3" href="file:///C:/Users/Vedant%20Parikh/Desktop/FastWrite/FastWrite/index.html"><b>FastWrite</b></a>
+    <a class="navbar-brand mx-3" href="./index.html"><b>FastWrite</b></a>
   </nav>
   <h2 class="my-3">
     <center id="input"></center>
@@ -39,12 +39,13 @@
   </form>
   <div id="hell"></div>
   <script>
-    var typing_ground, show_sentence, output, btn, score, randomNumber; // = document.querySelector("#input"); // random text
-
+    var typing_ground, show_sentence, output, btn, score, randomNumber; // random text
     var startTime, endTime, totalTimeTaken, selected_sentence, typed_sentence;
-    const sentences = ["Vedant Parikh"];
-
+    
     btn = document.querySelector("#btn");
+    
+    const sentences = ["Vedant Parikh", "Parikh Vedant"];
+    
     $(document).ready(function () {
       show_sentence = document.querySelector("#input"); // random text
       output = document.querySelector("#output"); // parallel writing output
@@ -58,6 +59,7 @@
       typing_ground.addEventListener('paste', function (event) {
         event.preventDefault();
       });
+      
       typing_ground.addEventListener('keydown', function (event) {
         var key = event.key;
         if (key === "Backspace") {
