@@ -18,7 +18,7 @@
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand mx-3" href="/"><b>FastWrite</b></a>
+    <a class="navbar-brand mx-3" href="file:///C:/Users/Vedant%20Parikh/Desktop/FastWrite/FastWrite/index.html"><b>FastWrite</b></a>
   </nav>
   <h2 class="my-3">
     <center id="input"></center>
@@ -43,8 +43,6 @@
 
     var startTime, endTime, totalTimeTaken, selected_sentence, typed_sentence;
     const sentences = ["Vedant Parikh"];
-
-
 
     btn = document.querySelector("#btn");
     $(document).ready(function () {
@@ -77,7 +75,6 @@
       let slice = selected_sentence[typed_sentence.length - 1];
       let typed = typed_sentence[typed_sentence.length - 1];
       compare(slice, typed);
-      checker(slice_sentence, typed_sentence);
     }
 
     const calculateTypingSpeed = (time_taken) => {
@@ -135,27 +132,28 @@
       endTime = date.getTime();
       totalTimeTaken = (endTime - startTime) / 1000;
       calculateTypingSpeed(totalTimeTaken);
+      checker(selected_sentence, typing_ground.value);
       // typing_ground.value = "";
       setTimeout(function () {
         window.location.reload();
-      }, 1000000);
+      }, 10000);
     };
 
-    const checker = (slice_sentence, typed_sentence) => {
-      if (slice_sentence == typed_sentence) {
-        typing_ground.style.backgroundColor = "lightgreen";
+    const checker = (selected_sentence, typed_sentence) => {
+      if (selected_sentence == typed_sentence) {
+        document.body.style.backgroundColor = "lightgreen";
       } else {
-        typing_ground.style.backgroundColor = "red";
+        document.body.style.backgroundColor = "red";
       }
     };
 
-    const compare = (selected_sentence, typed_sentence) => {
+    const compare = (slice, typed) => {
       let x = "";
-      if (selected_sentence != typed_sentence) {
-        x += '<span style="color: red;">' + typed_sentence + '</span>';
+      if (slice != typed) {
+        x += '<span style="color: red;">' + typed + '</span>';
       }
       else {
-        x += '<span style="color: green;">' + typed_sentence + '</span>';
+        x += '<span style="color: green;">' + typed + '</span>';
       }
       output.innerHTML += x;
     };
