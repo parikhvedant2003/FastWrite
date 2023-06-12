@@ -32,7 +32,7 @@
     <div class="container-md my-3">
       <div class="form-group my-3">
         <input oninput="write_parallel(this)" type="text" class="form-control my-1" name="text" id="text"
-          placeholder="Let's Start..." disabled />
+          autocomplete="off" placeholder="Let's Start..." disabled />
       </div>
       <button id="btn" class="btn btn-primary my-1">Start</button>
     </div>
@@ -41,11 +41,11 @@
   <script>
     var typing_ground, show_sentence, output, btn, score, randomNumber; // random text
     var startTime, endTime, totalTimeTaken, selected_sentence, typed_sentence;
-    
+
     btn = document.querySelector("#btn");
-    
+
     const sentences = ["Vedant Parikh", "Parikh Vedant"];
-    
+
     $(document).ready(function () {
       show_sentence = document.querySelector("#input"); // random text
       output = document.querySelector("#output"); // parallel writing output
@@ -59,10 +59,10 @@
       typing_ground.addEventListener('paste', function (event) {
         event.preventDefault();
       });
-      
+
       typing_ground.addEventListener('keydown', function (event) {
         var key = event.key;
-        if (key === "Backspace") {
+        if ((! event.ctrlKey) && (key === "Backspace")) {
           output.innerHTML = output.innerHTML.slice(0, (36 * (typing_ground.value.length - 2)));
         }
         if ((event.ctrlKey && key === "Backspace") || (event.ctrlKey && key === "Delete") || (key === "Delete") || (key.startsWith("Arrow"))) {
