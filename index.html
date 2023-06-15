@@ -17,27 +17,41 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand mx-3" href="./index.html"><b>FastWrite</b></a>
-  </nav>
-  <h2 class="my-3">
-    <center id="input"></center>
+  <h1 style="margin-top: 20px;">
+    <center style="opacity: 0.7; font-family: fantasy; user-select: none; font-size: 75px;" id="title">Fast Write</center>
+  </h1>
+  <h1 id="status" style="margin-top: 40px;"></h1>
+  <h2 style="margin-top: 40px;">
+    <center style="opacity: 0.5; user-select: none; font-size: 40px;" id="input"></center>
   </h2>
-  <h2 class="my-3">
+  <h2 style="margin-top: 30px;">
     <center>
-      <div id="output"></div>
+      <div style="opacity: 0.5; user-select: none; font-size: 40px;" id="output"></div>
     </center>
   </h2>
-  <form action="" method="post" id="myForm">
+  <form action="" method="post" id="myForm" style="margin-top: 30px;">
     <div class="container-md my-3">
       <div class="form-group my-3">
-        <input oninput="write_parallel(this)" type="text" class="form-control my-1" name="text" id="text"
-          autocomplete="off" placeholder="Let's Start..." disabled />
+        <input id="text" name="text" type="text" style="
+            opacity: 0.7;
+            max-width: 600px;
+            margin-top: 50px;
+            margin-left: auto;
+            margin-right: auto;
+          " class="form-control my-1" placeholder="Let's Start..." oninput="write_parallel(this)" autocomplete="off" disabled />
+        <center>
+          <button id="btn" class="btn btn-primary my-3">Start</button>
+        </center>
       </div>
-      <button id="btn" class="btn btn-primary my-1">Start</button>
     </div>
   </form>
-  <div id="hell"></div>
+  <div class="hell">
+    <div class="row text-center">
+      <div class="col" id="words"></div>
+      <div class="col" id="wpm"></div>
+      <div class="col" id="time"></div>
+    </div>
+  </div>
   <script>
     var typing_ground, show_sentence, output, btn, score, randomNumber; // random text
     var startTime, endTime, totalTimeTaken, selected_sentence, typed_sentence;
@@ -56,13 +70,21 @@
       selected_sentence = sentences[randomNumber];
       show_sentence.innerHTML = sentences[randomNumber];
 
+      document.body.addEventListener("keydown", function (event) {
+        if (event.key === "Tab") {
+          event.preventDefault();
+          typing_ground.removeAttribute("disabled");
+          startTyping();
+        }
+      });
+
       typing_ground.addEventListener('paste', function (event) {
         event.preventDefault();
       });
 
       typing_ground.addEventListener('keydown', function (event) {
         var key = event.key;
-        if ((! event.ctrlKey) && (key === "Backspace")) {
+        if ((!event.ctrlKey) && (key === "Backspace")) {
           output.innerHTML = output.innerHTML.slice(0, (36 * (typing_ground.value.length - 2)));
         }
         if ((event.ctrlKey && key === "Backspace") || (event.ctrlKey && key === "Delete") || (key === "Delete") || (key.startsWith("Arrow"))) {
@@ -72,6 +94,10 @@
     });
 
     function write_parallel(text) {
+      if (text.value === ""){
+        output.innerHTML = "";
+        return;
+      }
       typed_sentence = text.value;
       slice_sentence = selected_sentence.slice(0, (typed_sentence.length));
       let slice = selected_sentence[typed_sentence.length - 1];
@@ -85,39 +111,13 @@
       if (actualWords !== 0) {
         let typing_speed = (actualWords / time_taken) * 60;
         typing_speed = Math.round(typing_speed);
-        score.innerHTML = `<table class="table table-bordered table-light">
-  <thead>
-    <tr>
-      <th scope="col">WPM</th>
-      <th scope="col">No. of Words</th>
-      <th scope="col">Taken Time</th>
-      </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>${typing_speed}</td>
-          <td>${actualWords}</td>
-          <td>${time_taken}</td>
-          </tr>
-          </tbody>
-          </table>`;
+        document.getElementById("words").innerHTML += '<span>No. of Words</span><br><h2>' + actualWords + '</h2>';
+        document.getElementById("wpm").innerHTML += '<span>WPM</span><br><h2>' + typing_speed + '</h2>';
+        document.getElementById("time").innerHTML += '<span>Time Taken</span><br><h2>' + time_taken + '</h2>';
       } else {
-        score.innerHTML = `<table class="table table-bordered table-light">
-            <thead>
-              <tr>
-                <th scope="col">WPM</th>
-                <th scope="col">No. of Words</th>
-                <th scope="col">Taken Time</th>
-                </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>${time_taken}</td>
-                    </tr>
-                    </tbody>
-                    </table>`;
+        document.getElementById("words").innerHTML += '<span>No. of Words</span><br><h2>' + 0 + '</h2>';
+        document.getElementById("wpm").innerHTML += '<span>WPM</span><br><h2>' + 0 + '</h2>';
+        document.getElementById("time").innerHTML += '<span>Time Taken</span><br><h2>' + time_taken + '</h2>';
       }
     };
 
@@ -143,9 +143,11 @@
 
     const checker = (selected_sentence, typed_sentence) => {
       if (selected_sentence == typed_sentence) {
-        document.body.style.backgroundColor = "lightgreen";
+        document.getElementById("status").innerHTML = '<center style="color: green;">Success</center>';
+        // document.getElementById("output").style.color = 'green';
       } else {
-        document.body.style.backgroundColor = "red";
+        document.getElementById("status").innerHTML = '<center style="color: red;">Failure</center>';
+        // document.getElementById("output").style.color = 'red';
       }
     };
 
