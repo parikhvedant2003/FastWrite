@@ -1,89 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+      crossorigin="anonymous"
+    />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <style>
+      body {
+        background-color: rgb(177, 177, 177);
+      }
+    </style>
+    <title>FastWrite</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous" />
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <style>
-    body {
-      background-color: rgb(177, 177, 177);
-    }
-  </style>
-  <title>FastWrite</title>
-</head>
-
-<body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand mx-3" href="file:///C:/Users/Vedant%20Parikh/Desktop/FastWrite/FastWrite/index.html"><b>FastWrite</b></a>
-  </nav>
-  <h2 class="my-3">
-    <center id="input"></center>
-  </h2>
-  <h2 class="my-3">
-    <center>
-      <div id="output"></div>
-    </center>
-  </h2>
-  <form action="" method="post" id="myForm">
-    <div class="container-md my-3">
-      <div class="form-group my-3">
-        <input oninput="write_parallel(this)" type="text" class="form-control my-1" name="text" id="text"
-          placeholder="Let's Start..." disabled />
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a
+        class="navbar-brand mx-3"
+        href="file:///C:/Users/Vedant%20Parikh/Desktop/FastWrite/FastWrite/index.html"
+        ><b>FastWrite</b></a
+      >
+    </nav>
+    <h2 class="my-3">
+      <center style="opacity: 0.5" id="input"></center>
+    </h2>
+    <h2 class="my-3">
+      <center>
+        <div style="opacity: 0.5" id="output"></div>
+      </center>
+    </h2>
+    <form action="" method="post" id="myForm">
+      <div class="container-md my-3">
+        <div class="form-group my-3">
+          <input
+            id="text"
+            name="text"
+            type="text"
+            style="
+              opacity: 0.7;
+              max-width: 600px;
+              margin-top: 50px;
+              margin-left: auto;
+              margin-right: auto;
+            "
+            class="form-control my-1"
+            placeholder="Let's Start..."
+            oninput="write_parallel(this)"
+            disabled
+          />
+          <center>
+            <button id="btn" class="btn btn-primary my-3">Start</button>
+          </center>
+        </div>
       </div>
-      <button id="btn" class="btn btn-primary my-1">Start</button>
-    </div>
-  </form>
-  <div id="hell"></div>
-  <script>
-    var typing_ground, show_sentence, output, btn, score, randomNumber; // = document.querySelector("#input"); // random text
+    </form>
+    <div id="hell"></div>
+    <script>
+      var typing_ground, show_sentence, output, btn, score, randomNumber; // = document.querySelector("#input"); // random text
 
-    var startTime, endTime, totalTimeTaken, selected_sentence, typed_sentence;
-    const sentences = ["Vedant Parikh"];
+      var startTime, endTime, totalTimeTaken, selected_sentence, typed_sentence;
+      const sentences = ["Vedant Parikh"];
 
-    btn = document.querySelector("#btn");
-    $(document).ready(function () {
-      show_sentence = document.querySelector("#input"); // random text
-      output = document.querySelector("#output"); // parallel writing output
-      typing_ground = document.querySelector("#text"); // input box
-      score = document.querySelector("#hell"); // result box
+      btn = document.querySelector("#btn");
+      $(document).ready(function () {
+        show_sentence = document.querySelector("#input"); // random text
+        output = document.querySelector("#output"); // parallel writing output
+        typing_ground = document.querySelector("#text"); // input box
+        score = document.querySelector("#hell"); // result box
 
-      randomNumber = Math.floor(Math.random() * sentences.length);
-      selected_sentence = sentences[randomNumber];
-      show_sentence.innerHTML = sentences[randomNumber];
+        randomNumber = Math.floor(Math.random() * sentences.length);
+        selected_sentence = sentences[randomNumber];
+        show_sentence.innerHTML = sentences[randomNumber];
 
-      typing_ground.addEventListener('paste', function (event) {
-        event.preventDefault();
-      });
-      typing_ground.addEventListener('keydown', function (event) {
-        var key = event.key;
-        if (key === "Backspace") {
-          output.innerHTML = output.innerHTML.slice(0, (36 * (typing_ground.value.length - 2)));
-        }
-        if ((event.ctrlKey && key === "Backspace") || (event.ctrlKey && key === "Delete") || (key === "Delete") || (key.startsWith("Arrow"))) {
+        document.body.addEventListener("keydown", function (event) {
+          if (event.key === "Tab") {
+            event.preventDefault();
+            typing_ground.removeAttribute("disabled");
+            startTyping();
+          }
+        });
+
+        typing_ground.addEventListener("paste", function (event) {
           event.preventDefault();
-        }
+        });
+
+        typing_ground.addEventListener("keydown", function (event) {
+          var key = event.key;
+          if (key === "Backspace") {
+            output.innerHTML = output.innerHTML.slice(
+              0,
+              36 * (typing_ground.value.length - 2)
+            );
+          }
+          if (
+            (event.ctrlKey && key === "Backspace") ||
+            (event.ctrlKey && key === "Delete") ||
+            key === "Delete" ||
+            key.startsWith("Arrow")
+          ) {
+            event.preventDefault();
+          }
+        });
       });
-    });
 
-    function write_parallel(text) {
-      typed_sentence = text.value;
-      slice_sentence = selected_sentence.slice(0, (typed_sentence.length));
-      let slice = selected_sentence[typed_sentence.length - 1];
-      let typed = typed_sentence[typed_sentence.length - 1];
-      compare(slice, typed);
-    }
+      function write_parallel(text) {
+        typed_sentence = text.value;
+        let w = typed_sentence.split(" ").reverse()[0];
+        slice_sentence = selected_sentence.slice(0, typed_sentence.length);
+        let slice = selected_sentence[typed_sentence.length - 1];
+        let typed = typed_sentence[typed_sentence.length - 1];
+        compare(slice, typed);
+      }
 
-    const calculateTypingSpeed = (time_taken) => {
-      let totalWords = typing_ground.value.trim();
-      let actualWords = totalWords === "" ? 0 : totalWords.split(" ").length;
-      if (actualWords !== 0) {
-        let typing_speed = (actualWords / time_taken) * 60;
-        typing_speed = Math.round(typing_speed);
-        score.innerHTML = `<table class="table table-bordered table-light">
+      const calculateTypingSpeed = (time_taken) => {
+        let totalWords = typing_ground.value.trim();
+        let actualWords = totalWords === "" ? 0 : totalWords.split(" ").length;
+        if (actualWords !== 0) {
+          let typing_speed = (actualWords / time_taken) * 60;
+          typing_speed = Math.round(typing_speed);
+          score.innerHTML = `<table class="table table-bordered table-light">
   <thead>
     <tr>
       <th scope="col">WPM</th>
@@ -99,8 +140,8 @@
           </tr>
           </tbody>
           </table>`;
-      } else {
-        score.innerHTML = `<table class="table table-bordered table-light">
+        } else {
+          score.innerHTML = `<table class="table table-bordered table-light">
             <thead>
               <tr>
                 <th scope="col">WPM</th>
@@ -116,67 +157,65 @@
                     </tr>
                     </tbody>
                     </table>`;
-      }
-    };
+        }
+      };
 
-    const startTyping = () => {
-      typing_ground.focus();
-      let date = new Date();
-      startTime = date.getTime();
-      btn.innerText = "Done";
-    };
+      const startTyping = () => {
+        typing_ground.focus();
+        let date = new Date();
+        startTime = date.getTime();
+        btn.innerText = "Done";
+      };
 
-    const endTypingTest = () => {
-      btn.setAttribute("disabled", "true");
-      let date = new Date();
-      endTime = date.getTime();
-      totalTimeTaken = (endTime - startTime) / 1000;
-      calculateTypingSpeed(totalTimeTaken);
-      checker(selected_sentence, typing_ground.value);
-      // typing_ground.value = "";
-      setTimeout(function () {
-        window.location.reload();
-      }, 10000);
-    };
+      const endTypingTest = () => {
+        btn.setAttribute("disabled", "true");
+        let date = new Date();
+        endTime = date.getTime();
+        totalTimeTaken = (endTime - startTime) / 1000;
+        calculateTypingSpeed(totalTimeTaken);
+        checker(selected_sentence, typing_ground.value);
+        // typing_ground.value = "";
+        setTimeout(function () {
+          window.location.reload();
+        }, 5000);
+      };
 
-    const checker = (selected_sentence, typed_sentence) => {
-      if (selected_sentence == typed_sentence) {
-        document.body.style.backgroundColor = "lightgreen";
-      } else {
-        document.body.style.backgroundColor = "red";
-      }
-    };
+      const checker = (selected_sentence, typed_sentence) => {
+        if (selected_sentence == typed_sentence) {
+          document.body.style.backgroundColor = "lightgreen";
+        } else {
+          document.body.style.backgroundColor = "red";
+        }
+      };
 
-    const compare = (slice, typed) => {
-      let x = "";
-      if (slice != typed) {
-        x += '<span style="color: red;">' + typed + '</span>';
-      }
-      else {
-        x += '<span style="color: green;">' + typed + '</span>';
-      }
-      output.innerHTML += x;
-    };
+      const compare = (slice, typed) => {
+        let x = "";
+        if (slice != typed) {
+          x += '<span style="color: red;">' + typed + "</span>";
+        } else {
+          x += '<span style="color: green;">' + typed + "</span>";
+        }
+        output.innerHTML += x;
+      };
 
-    btn.addEventListener("click", () => {
-      switch (btn.innerText.toLowerCase()) {
-        case "start":
-          typing_ground.removeAttribute("disabled");
-          startTyping();
-          break;
-        case "done":
-          typing_ground.setAttribute("disabled", "true");
-          endTypingTest();
-          break;
-      }
-    });
-
-    document
-      .getElementById("myForm")
-      .addEventListener("submit", function (event) {
-        event.preventDefault();
+      btn.addEventListener("click", () => {
+        switch (btn.innerText.toLowerCase()) {
+          case "start":
+            typing_ground.removeAttribute("disabled");
+            startTyping();
+            break;
+          case "done":
+            typing_ground.setAttribute("disabled", "true");
+            endTypingTest();
+            break;
+        }
       });
-  </script>
-</body>
 
+      document
+        .getElementById("myForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+        });
+    </script>
+  </body>
 </html>
