@@ -10,18 +10,25 @@
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <style>
     body {
-      background-color: rgb(177, 177, 177);
+      background-color: rgb(220, 220, 220);
     }
   </style>
   <title>FastWrite</title>
 </head>
 
 <body>
-  <h1 style="margin-top: 20px;">
-    <center style="opacity: 0.7; font-family: fantasy; user-select: none; font-size: 75px;" id="title">Fast Write</center>
+  <h1 style="margin-top: 30px;">
+    <center style="opacity: 0.7; font-family: fantasy; user-select: none; font-size: 75px;" id="title">Fast Write
+    </center>
   </h1>
-  <h1 id="status" style="margin-top: 40px;"></h1>
-  <h2 style="margin-top: 40px;">
+  <div id="start" style="margin-top: 30px; font-size: 20px; font-family: monospace; user-select: none;">
+    <center><kbd>Tab</kbd> to start test</center>
+  </div>
+  <div id="submit" style="margin-top: 30px; font-size: 20px; font-family: monospace; user-select: none;" hidden>
+    <center><kbd>Enter</kbd> to submit test</center>
+  </div>
+  <h1 id="status"></h1>
+  <h2 style="margin-top: 30px;">
     <center style="opacity: 0.5; user-select: none; font-size: 40px;" id="input"></center>
   </h2>
   <h2 style="margin-top: 30px;">
@@ -29,22 +36,28 @@
       <div style="opacity: 0.5; user-select: none; font-size: 40px;" id="output"></div>
     </center>
   </h2>
-  <form action="" method="post" id="myForm" style="margin-top: 30px;">
-    <div class="container-md my-3">
-      <div class="form-group my-3">
-        <input id="text" name="text" type="text" style="
+  <center>
+    <form action="" method="post" id="myForm" style="margin-top: 30px;">
+      <div class="container-md my-3">
+        <div class="form-group my-3">
+          <input id="text" name="text" type="text" style="
             opacity: 0.7;
+            height: 40px;
+            background-color: transparent;
+            border-color: transparent;
+            caret-color: red;
+            user-select: none;
             max-width: 600px;
             margin-top: 50px;
             margin-left: auto;
             margin-right: auto;
-          " class="form-control my-1" placeholder="Let's Start..." oninput="write_parallel(this)" autocomplete="off" disabled />
-        <center>
+          " class="form-control my-1" placeholder="Let's Start..." oninput="write_parallel(this)" autocomplete="off"
+            disabled />
           <button id="btn" class="btn btn-primary my-3">Start</button>
-        </center>
+        </div>
       </div>
-    </div>
-  </form>
+    </form>
+  </center>
   <div class="hell">
     <div class="row text-center">
       <div class="col" id="words"></div>
@@ -53,12 +66,26 @@
     </div>
   </div>
   <script>
+
     var typing_ground, show_sentence, output, btn, score, randomNumber; // random text
     var startTime, endTime, totalTimeTaken, selected_sentence, typed_sentence;
 
     btn = document.querySelector("#btn");
 
-    const sentences = ["Vedant Parikh", "Parikh Vedant"];
+    // const sentences = ["Vedant"];
+
+    const sentences = [
+      "Don't let yesterday take up too much of today.",
+      "If you're going through hell, keep going.",
+      "Every man dies. Not every man lives.",
+      "Life shrinks or expands in proportion to one's courage.",
+      "Nothing is impossible. The word itself says that I'm possible!",
+      "We need much less than we think we need.",
+      "If things go wrong, don't go with them.",
+      "Everything has beauty, but not everyone sees it.",
+      "There is no way to happiness - happiness is the way.",
+      "Be yourself; everyone else is already taken."
+    ];
 
     $(document).ready(function () {
       show_sentence = document.querySelector("#input"); // random text
@@ -74,14 +101,17 @@
         if (event.key === "Tab") {
           event.preventDefault();
           typing_ground.removeAttribute("disabled");
+          document.getElementById("start").hidden = true;
+          document.getElementById("submit").hidden = false;
           startTyping();
         }
       });
-
       typing_ground.addEventListener('paste', function (event) {
         event.preventDefault();
       });
-
+      typing_ground.addEventListener("mousedown", function (event) {
+        event.preventDefault();
+      });
       typing_ground.addEventListener('keydown', function (event) {
         var key = event.key;
         if ((!event.ctrlKey) && (key === "Backspace")) {
@@ -94,7 +124,7 @@
     });
 
     function write_parallel(text) {
-      if (text.value === ""){
+      if (text.value === "") {
         output.innerHTML = "";
         return;
       }
@@ -130,23 +160,27 @@
 
     const endTypingTest = () => {
       btn.setAttribute("disabled", "true");
+      document.getElementById("text").hidden = true;
+      document.getElementById("submit").hidden = true;
       let date = new Date();
       endTime = date.getTime();
       totalTimeTaken = (endTime - startTime) / 1000;
       calculateTypingSpeed(totalTimeTaken);
       checker(selected_sentence, typing_ground.value);
-      // typing_ground.value = "";
       setTimeout(function () {
         window.location.reload();
-      }, 10000);
+      }, 3000);
     };
 
     const checker = (selected_sentence, typed_sentence) => {
-      if (selected_sentence == typed_sentence) {
+      if (selected_sentence === typed_sentence.trim()) {
         document.getElementById("status").innerHTML = '<center style="color: green;">Success</center>';
-        // document.getElementById("output").style.color = 'green';
+        document.getElementById("output").innerHTML = '<center style="color: green;">' + typed_sentence.trim() + '</center>';
+        document.getElementById("status").style = "margin-top: 30px;";
+        document.getElementById("input").hidden = true;
       } else {
         document.getElementById("status").innerHTML = '<center style="color: red;">Failure</center>';
+        document.getElementById("status").style = "margin-top: 30px;";
         // document.getElementById("output").style.color = 'red';
       }
     };
