@@ -27,6 +27,11 @@
   <div id="submit" style="margin-top: 30px; font-size: 20px; font-family: monospace; user-select: none;" hidden>
     <center><kbd>Enter</kbd> to submit test</center>
   </div>
+  <div id="timer" style="margin-top: 30px; font-size: 20px; font-family: monospace; user-select: none;">
+    <center>
+      <h2 id="seconds"></h2>
+    </center>
+  </div>
   <h1 id="status"></h1>
   <h2 style="margin-top: 30px;">
     <center style="opacity: 0.5; user-select: none; font-size: 40px;" id="input"></center>
@@ -63,6 +68,7 @@
       <div class="col" id="words"></div>
       <div class="col" id="wpm"></div>
       <div class="col" id="time"></div>
+      <div class="col" id="accuracy"></div>
     </div>
   </div>
   <script>
@@ -100,10 +106,9 @@
       document.body.addEventListener("keydown", function (event) {
         if (event.key === "Tab") {
           event.preventDefault();
-          typing_ground.removeAttribute("disabled");
+          startTyping();
           document.getElementById("start").hidden = true;
           document.getElementById("submit").hidden = false;
-          startTyping();
         }
       });
       typing_ground.addEventListener('paste', function (event) {
@@ -123,6 +128,20 @@
       });
     });
 
+    function startTimer(duration) {
+      var timer = duration;
+      interval = setInterval(function () {
+        seconds = parseInt(timer, 10);
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        document.querySelector('#seconds').textContent = seconds + " Seconds";
+        timer -= 1;
+        if (timer < 0) {
+          clearInterval(interval);
+          endTypingTest();
+        }
+      }, 1000);
+    }
+
     function write_parallel(text) {
       if (text.value === "") {
         output.innerHTML = "";
@@ -137,21 +156,39 @@
 
     const calculateTypingSpeed = (time_taken) => {
       let totalWords = typing_ground.value.trim();
+      let totalCharacters = totalWords.length;
+      let typedWords = totalWords.split(' ');
+      let sentenceWords = selected_sentence.split(' ');
+      let correctWords = 0;
+      for (let i = 0; i < typedWords.length; i++) {
+        if (typedWords[i] === sentenceWords[i]) {
+          correctWords += 1;
+        }
+      }
+      let uncorrectWords = (typedWords.length - correctWords);
+      let errorRate = (uncorrectWords / (time_taken / 60));
+      let grossSpeed = (totalCharacters / (5 * (time_taken / 60)));
+      let netSpeed = Math.ceil(grossSpeed - errorRate);
+      let accuracy = (correctWords / typedWords.length) * 100;
       let actualWords = totalWords === "" ? 0 : totalWords.split(" ").length;
-      if (actualWords !== 0) {
+      if (actualWords !== 0 && netSpeed > 0) {
         let typing_speed = (actualWords / time_taken) * 60;
         typing_speed = Math.round(typing_speed);
         document.getElementById("words").innerHTML += '<span>No. of Words</span><br><h2>' + actualWords + '</h2>';
-        document.getElementById("wpm").innerHTML += '<span>WPM</span><br><h2>' + typing_speed + '</h2>';
+        document.getElementById("wpm").innerHTML += '<span>WPM</span><br><h2>' + netSpeed + '</h2>';
         document.getElementById("time").innerHTML += '<span>Time Taken</span><br><h2>' + time_taken + '</h2>';
+        document.getElementById("accuracy").innerHTML += '<span>Accuracy</span><br><h2>' + accuracy + '%</h2>';
       } else {
         document.getElementById("words").innerHTML += '<span>No. of Words</span><br><h2>' + 0 + '</h2>';
         document.getElementById("wpm").innerHTML += '<span>WPM</span><br><h2>' + 0 + '</h2>';
         document.getElementById("time").innerHTML += '<span>Time Taken</span><br><h2>' + time_taken + '</h2>';
+        document.getElementById("accuracy").innerHTML += '<span>Accuracy</span><br><h2>' + accuracy + ' %</h2>';
       }
     };
 
     const startTyping = () => {
+      startTimer(60);
+      typing_ground.removeAttribute("disabled");
       typing_ground.focus();
       let date = new Date();
       startTime = date.getTime();
@@ -160,8 +197,11 @@
 
     const endTypingTest = () => {
       btn.setAttribute("disabled", "true");
+      typing_ground.setAttribute("disabled", "true");
       document.getElementById("text").hidden = true;
       document.getElementById("submit").hidden = true;
+      document.getElementById("timer").hidden = true;
+      clearInterval(interval);
       let date = new Date();
       endTime = date.getTime();
       totalTimeTaken = (endTime - startTime) / 1000;
@@ -169,7 +209,7 @@
       checker(selected_sentence, typing_ground.value);
       setTimeout(function () {
         window.location.reload();
-      }, 3000);
+      }, 5000);
     };
 
     const checker = (selected_sentence, typed_sentence) => {
@@ -199,11 +239,9 @@
     btn.addEventListener("click", () => {
       switch (btn.innerText.toLowerCase()) {
         case "start":
-          typing_ground.removeAttribute("disabled");
           startTyping();
           break;
         case "done":
-          typing_ground.setAttribute("disabled", "true");
           endTypingTest();
           break;
       }
