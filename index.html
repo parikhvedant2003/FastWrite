@@ -69,7 +69,7 @@
         <h2 id="seconds"></h2>
       </center>
     </div>
-    <div class="hell">
+    <div id="hell" hidden>
       <div class="row text-center">
         <div class="col" id="accuracy"></div>
       </div>
@@ -135,20 +135,20 @@
 
       btn = document.querySelector("#btn");
 
-      const sentences = ["Vedant"];
+      // const sentences = ["Vedant"];
 
-      // const sentences = [
-      //   "Don't let yesterday take up too much of today.",
-      //   "If you're going through hell, keep going.",
-      //   "Every man dies. Not every man lives.",
-      //   "Life shrinks or expands in proportion to one's courage.",
-      //   "Nothing is impossible. The word itself says that I'm possible!",
-      //   "We need much less than we think we need.",
-      //   "If things go wrong, don't go with them.",
-      //   "Everything has beauty, but not everyone sees it.",
-      //   "There is no way to happiness - happiness is the way.",
-      //   "Be yourself; everyone else is already taken."
-      // ];
+      const sentences = [
+        "Don't let yesterday take up too much of today.",
+        "If you're going through hell, keep going.",
+        "Every man dies. Not every man lives.",
+        "Life shrinks or expands in proportion to one's courage.",
+        "Nothing is impossible. The word itself says that I'm possible!",
+        "We need much less than we think we need.",
+        "If things go wrong, don't go with them.",
+        "Everything has beauty, but not everyone sees it.",
+        "There is no way to happiness - happiness is the way.",
+        "Be yourself; everyone else is already taken."
+      ];
 
       $(document).ready(function () {
         show_sentence = document.querySelector("#input"); // random text
@@ -274,6 +274,7 @@
         document.getElementById("text").hidden = true;
         document.getElementById("submit").hidden = true;
         document.getElementById("timer").hidden = true;
+        document.getElementById("hell").hidden = false;
         clearInterval(interval);
         let date = new Date();
         endTime = date.getTime();
